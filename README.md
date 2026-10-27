@@ -31,7 +31,8 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-De app staat online via GitHub Pages (branch `gh-pages`): https://wijnandkoetsier.github.io/Prik/
+De app staat online via GitHub Pages: https://wijnandkoetsier.github.io/Prik/
+Elke wijziging op `main` wordt automatisch gepubliceerd (workflow `Publish site` zet `main` door naar `gh-pages`).
 
 Op je telefoon: open de link in Chrome → menu (⋮) → **Toevoegen aan startscherm** / **App installeren**. Op iPhone: Safari → Deel → **Zet op beginscherm**.
 

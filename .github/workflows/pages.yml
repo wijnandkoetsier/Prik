@@ -1,0 +1,26 @@
+# Keeps the live site (GitHub Pages, served from the gh-pages branch) in sync with main.
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run parser tests
+        run: node --test
+      - name: Copy main to gh-pages
+        run: git push --force origin HEAD:refs/heads/gh-pages
