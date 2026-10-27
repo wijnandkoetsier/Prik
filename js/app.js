@@ -654,6 +654,40 @@
     history.replaceState(null, '', location.pathname);
   }
 
+  // ---------------------------------------------------------------- install button
+  const installBtn = $('#installBtn');
+  const installHelp = $('#installHelp');
+  const isInstalled = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let installPrompt = null;
+  installBtn.hidden = isInstalled();
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // show our own button instead of the browser banner
+    installPrompt = e;
+    installBtn.hidden = isInstalled();
+  });
+  window.addEventListener('appinstalled', () => {
+    installBtn.hidden = true;
+    installHelp.hidden = true;
+    installPrompt = null;
+    toast('Prik staat nu op je startscherm');
+  });
+  installBtn.addEventListener('click', async () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+      installPrompt = null;
+      if (outcome === 'accepted') installBtn.hidden = true;
+      return;
+    }
+    installHelp.innerHTML = isIOS
+      ? 'Tik in Safari op de <b>Deel</b>-knop (vierkantje met pijl) en kies <b>Zet op beginscherm</b>.'
+      : 'Open het menu van je browser (⋮) en kies <b>App installeren</b> of <b>Toevoegen aan startscherm</b>.';
+    installHelp.hidden = false;
+    installHelp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }

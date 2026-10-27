@@ -222,6 +222,16 @@ button { cursor: pointer; }
 .foot-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
 .link { background: none; border: 0; color: var(--lime); font-size: 14px; padding: 6px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
+.install-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+  margin-top: 22px; border: 0; border-radius: 16px; padding: 16px;
+  background: var(--lime); color: var(--ink); font-weight: 800; font-size: 18px; letter-spacing: -.02em;
+}
+.install-btn[hidden], .install-help[hidden] { display: none; }
+.install-btn:active { background: var(--lime-press); transform: scale(.98); }
+.install-help { margin: 12px 0 0; color: var(--white); font-size: 15px; line-height: 1.5; }
+.install-help b { color: var(--lime); }
+
 /* ---------- dialogs ---------- */
 .sheet {
   border: 0; padding: 0; margin: auto auto 0; width: 100%; max-width: 560px;
