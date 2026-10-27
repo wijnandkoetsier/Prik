@@ -1,12 +1,17 @@
-// Offline support: serve the app shell from cache, refresh it in the background.
-const CACHE = 'prik-v3';
+// Offline support. App files come from the network first so updates show up
+// right away; the cache is only used when there is no connection.
+const CACHE = 'prik-v4';
 const SHELL = [
   './', 'index.html', 'css/styles.css', 'js/parser.js', 'js/calendar.js', 'js/app.js',
   'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png',
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(CACHE)
+      .then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' }))))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (e) => {
@@ -21,21 +26,25 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  const sameOrigin = url.origin === location.origin;
   const isFont = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
-  if (!sameOrigin && !isFont) return;
 
-  e.respondWith(
-    caches.open(CACHE).then(async (cache) => {
-      const key = req.mode === 'navigate' ? 'index.html' : req;
-      const cached = await cache.match(key, { ignoreSearch: req.mode === 'navigate' });
-      const network = fetch(req)
+  if (url.origin === location.origin) {
+    const key = req.mode === 'navigate' ? 'index.html' : req;
+    e.respondWith(
+      fetch(req.mode === 'navigate' ? req.url : req, { cache: 'no-cache' })
         .then((res) => {
-          if (res && (res.ok || res.type === 'opaque')) cache.put(key, res.clone());
+          if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(key, copy)); }
           return res;
         })
-        .catch(() => cached);
-      return cached || network;
-    }),
-  );
+        .catch(() => caches.match(key, { ignoreSearch: true })),
+    );
+  } else if (isFont) {
+    e.respondWith(
+      caches.match(req).then((hit) => hit || fetch(req).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(req, copy));
+        return res;
+      })),
+    );
+  }
 });
