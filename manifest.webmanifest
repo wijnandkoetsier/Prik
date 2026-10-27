@@ -1,0 +1,25 @@
+{
+  "name": "prik. – Snel in je agenda",
+  "short_name": "prik.",
+  "description": "Typ of spreek je afspraak in gewone taal. Prik zet hem in je agenda.",
+  "lang": "nl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#172a3f",
+  "theme_color": "#172a3f",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "share_target": {
+    "action": "./",
+    "method": "GET",
+    "params": { "title": "title", "text": "q" }
+  },
+  "shortcuts": [
+    { "name": "Nieuwe afspraak", "url": "./?focus=event" }
+  ]
+}

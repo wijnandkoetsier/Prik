@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>prik. – Snel in je agenda</title>
+  <meta name="description" content="Typ of spreek je afspraak in gewone taal. Prik zet hem in je agenda.">
+  <meta name="theme-color" content="#172a3f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h12m-3-3 3 3-3 3M20 13v2a3 3 0 0 1-3 3H5m3 3-3-3 3-3"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  </svg>
+
+  <div class="app">
+    <header class="top">
+      <a class="logo" href="./" aria-label="prik. – home">prik<span>.</span></a>
+      <span class="tagline">Snel in je agenda</span>
+    </header>
+
+    <h1 class="hero">Geprikt.<br>En weer door.</h1>
+
+
+    <!-- Afspraak -->
+    <section class="card composer" aria-labelledby="h-event">
+      <h2 id="h-event">Prik je afspraak</h2>
+      <form class="input-row" id="eventForm" autocomplete="off">
+        <label class="sr-only" for="eventInput">Afspraak</label>
+        <input id="eventInput" type="text" enterkeyhint="send" placeholder="Bijv. lunch 20 oktober om 20u">
+        <button class="action" type="button" data-input="eventInput" aria-label="Inspreken">
+          <svg class="ic ic-mic" aria-hidden="true"><use href="#i-mic"/></svg>
+          <svg class="ic ic-send" aria-hidden="true"><use href="#i-send"/></svg>
+          <svg class="ic ic-stop" aria-hidden="true"><use href="#i-stop"/></svg>
+        </button>
+      </form>
+      <div class="preview" id="eventPreview" aria-live="polite"></div>
+    </section>
+
+    <details class="panel" id="eventsPanel" data-key="events">
+      <summary>
+        <span class="panel-title">Mijn afspraken</span>
+        <span class="panel-meta" id="eventsCount">0</span>
+        <svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="panel-body" id="eventsList"></div>
+    </details>
+
+    <details class="panel" id="calPanel" data-key="calendar">
+      <summary>
+        <span class="panel-title">Maandagenda</span>
+        <span class="panel-meta" id="calMonthLabel"></span>
+        <svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="panel-body">
+        <div class="month-nav">
+          <button type="button" class="icon-btn" id="calPrev" aria-label="Vorige maand"><svg class="ic"><use href="#i-left"/></svg></button>
+          <button type="button" class="month-title" id="calToday" title="Naar vandaag"></button>
+          <button type="button" class="icon-btn" id="calNext" aria-label="Volgende maand"><svg class="ic"><use href="#i-right"/></svg></button>
+        </div>
+        <div class="month-grid" id="calGrid" role="grid"></div>
+        <div class="day-detail" id="dayDetail"></div>
+      </div>
+    </details>
+
+    <!-- Taak -->
+    <section class="card composer" aria-labelledby="h-task">
+      <h2 id="h-task">Prik je taak</h2>
+      <form class="input-row" id="taskForm" autocomplete="off">
+        <label class="sr-only" for="taskInput">Taak</label>
+        <input id="taskInput" type="text" enterkeyhint="send" placeholder="Bijv. offerte versturen morgen">
+        <button class="action" type="button" data-input="taskInput" aria-label="Inspreken">
+          <svg class="ic ic-mic" aria-hidden="true"><use href="#i-mic"/></svg>
+          <svg class="ic ic-send" aria-hidden="true"><use href="#i-send"/></svg>
+          <svg class="ic ic-stop" aria-hidden="true"><use href="#i-stop"/></svg>
+        </button>
+      </form>
+      <div class="preview" id="taskPreview" aria-live="polite"></div>
+    </section>
+
+    <details class="panel" id="tasksPanel" data-key="tasks">
+      <summary>
+        <span class="panel-title">Mijn taken</span>
+        <span class="panel-meta" id="tasksCount">0 open</span>
+        <svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg>
+      </summary>
+      <div class="panel-body" id="tasksList"></div>
+    </details>
+
+    <footer class="foot">
+      <p>Prik onthoudt alleen wat je hier prikt. Alles blijft op dit toestel.</p>
+      <div class="foot-actions">
+        <button type="button" class="link" id="backup">Back-up maken</button>
+        <label class="link">Back-up terugzetten<input type="file" id="restore" accept="application/json" hidden></label>
+      </div>
+      <button type="button" class="install-btn" id="installBtn" hidden>
+        <svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Installeer Prik als app
+      </button>
+      <p class="install-help" id="installHelp" hidden></p>
+    </footer>
+  </div>
+
+  <!-- Afspraak bewerken -->
+  <dialog id="eventDialog" class="sheet">
+    <form method="dialog" id="eventEdit">
+      <div class="sheet-head">
+        <h3>Afspraak</h3>
+        <button type="button" class="icon-btn" data-close aria-label="Sluiten"><svg class="ic"><use href="#i-x"/></svg></button>
+      </div>
+      <label class="field"><span>Titel</span><input name="title" required></label>
+      <div class="field-row">
+        <label class="field"><span>Datum</span><input name="date" type="date" required></label>
+        <label class="switch"><input name="allDay" type="checkbox"><span>Hele dag</span></label>
+      </div>
+      <div class="field-row times">
+        <label class="field"><span>Van</span><input name="start" type="time"></label>
+        <label class="field"><span>Tot</span><input name="end" type="time"></label>
+      </div>
+      <label class="field"><span>Locatie</span><input name="location" placeholder="Optioneel"></label>
+      <div class="field-row">
+        <label class="field"><span>Herhalen</span>
+          <select name="repeat">
+            <option value="">Niet</option>
+            <option value="DAILY">Elke dag</option>
+            <option value="WORKDAYS">Elke werkdag</option>
+            <option value="WEEKLY">Elke week</option>
+            <option value="BIWEEKLY">Om de week</option>
+            <option value="MONTHLY">Elke maand</option>
+            <option value="YEARLY">Elk jaar</option>
+          </select>
+        </label>
+        <label class="field"><span>Herinnering</span>
+          <select name="reminder">
+            <option value="0">Geen</option>
+            <option value="5">5 min vooraf</option>
+            <option value="15">15 min vooraf</option>
+            <option value="30">30 min vooraf</option>
+            <option value="60">1 uur vooraf</option>
+            <option value="1440">1 dag vooraf</option>
+          </select>
+        </label>
+      </div>
+      <label class="field"><span>Notitie</span><textarea name="notes" rows="2" placeholder="Optioneel"></textarea></label>
+      <div class="sheet-actions">
+        <button type="button" class="btn danger" data-delete>Verwijderen</button>
+        <button type="button" class="btn ghost" data-export>In Google Agenda</button>
+        <button type="submit" class="btn primary">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Taak bewerken -->
+  <dialog id="taskDialog" class="sheet">
+    <form method="dialog" id="taskEdit">
+      <div class="sheet-head">
+        <h3>Taak</h3>
+        <button type="button" class="icon-btn" data-close aria-label="Sluiten"><svg class="ic"><use href="#i-x"/></svg></button>
+      </div>
+      <label class="field"><span>Titel</span><input name="title" required></label>
+      <div class="field-row">
+        <label class="field"><span>Deadline</span><input name="date" type="date"></label>
+        <label class="field"><span>Tijd</span><input name="time" type="time"></label>
+      </div>
+      <label class="switch"><input name="priority" type="checkbox"><span>Belangrijk</span></label>
+      <label class="field"><span>Notitie</span><textarea name="notes" rows="2" placeholder="Optioneel"></textarea></label>
+      <div class="sheet-actions">
+        <button type="button" class="btn danger" data-delete>Verwijderen</button>
+        <button type="button" class="btn ghost" data-export>In Google Agenda</button>
+        <button type="submit" class="btn primary">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><span></span><button type="button"></button></div>
+
+  <script src="js/parser.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
