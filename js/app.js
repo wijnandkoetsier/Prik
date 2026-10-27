@@ -292,8 +292,7 @@
     list.innerHTML = html;
   }
   function eventRow(ev, at, isPast) {
-    const end = C.fromLocal(ev.end);
-    const when = ev.allDay ? 'Hele<small>dag</small>' : `${hm(at)}<small>${hm(new Date(at.getTime() + (end - C.fromLocal(ev.start))))}</small>`;
+    const when = ev.allDay ? '<small>Hele dag</small>' : hm(at);
     const meta = [];
     if (isPast) meta.push(`<span>${escapeHtml(fmtDay.format(at))}</span>`);
     if (ev.location) meta.push(`<span>${icon('pin')}${escapeHtml(ev.location)}</span>`);

@@ -1,6 +1,6 @@
 // Offline support. App files come from the network first so updates show up
 // right away; the cache is only used when there is no connection.
-const CACHE = 'prik-v4';
+const CACHE = 'prik-v5';
 const SHELL = [
   './', 'index.html', 'css/styles.css', 'js/parser.js', 'js/calendar.js', 'js/app.js',
   'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png',
