@@ -14,7 +14,8 @@
   - `standup elke werkdag 9:00`, `yoga elke maandag 19u`, `container om de week donderdag`
   - Slim: `etentje half 8` wordt 19:30, `om 3 uur` wordt 15:00.
 - **Inspreken** met de microfoonknop (Nederlands). Staat er tekst, dan wordt de knop een verstuurknop.
-- **Naar elke agenda**: Google / Samsung, Apple (iPhone/Mac), Outlook.com, Microsoft 365, of een `.ics`-bestand. Op je telefoon opent het deelmenu zodat je zelf je agenda kiest.
+- **Direct naar Google Agenda**: na het prikken opent Google Agenda met de afspraak ingevuld, jij tikt op Opslaan.
+- Prik onthoudt alleen de afspraken en taken die je in Prik zelf invoert.
 - **Mijn afspraken** gegroepeerd per dag (Vandaag, Morgen, …), herhalende afspraken tonen de eerstvolgende keer.
 - **Maandagenda** met stipjes voor afspraken en taken, vegen om van maand te wisselen, tik een dag voor details.
 - **Taken** met deadline, prioriteit (`!` of `belangrijk`), afvinken, verlopen taken in rood, herhalende taken.
@@ -30,7 +31,9 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-Online zetten kan op elke statische host (GitHub Pages, Netlify, Vercel). Gebruik https, dan werken installeren, offline en de microfoon.
+De app staat online via GitHub Pages (branch `gh-pages`): https://wijnandkoetsier.github.io/Prik/
+
+Op je telefoon: open de link in Chrome → menu (⋮) → **Toevoegen aan startscherm** / **App installeren**. Op iPhone: Safari → Deel → **Zet op beginscherm**.
 
 ## Tests
 

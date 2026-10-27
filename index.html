@@ -42,20 +42,6 @@
 
     <h1 class="hero">Geprikt.<br>En weer door.</h1>
 
-    <div class="target-row">
-      <label class="select">
-        <span class="sr-only">Waar komt je afspraak terecht?</span>
-        <select id="target">
-          <option value="google">Google / Samsung Agenda</option>
-          <option value="apple">Apple Agenda (iPhone / Mac)</option>
-          <option value="outlook">Outlook.com</option>
-          <option value="office">Outlook (werk / Microsoft 365)</option>
-          <option value="ics">Ander agenda-bestand (.ics)</option>
-          <option value="none">Alleen in Prik bewaren</option>
-        </select>
-        <svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg>
-      </label>
-    </div>
 
     <!-- Afspraak -->
     <section class="card composer" aria-labelledby="h-event">
@@ -70,11 +56,6 @@
         </button>
       </form>
       <div class="preview" id="eventPreview" aria-live="polite"></div>
-      <div class="examples" id="eventExamples">
-        <button type="button">padel vrijdag 19u</button>
-        <button type="button">tandarts morgen half 3</button>
-        <button type="button">standup elke werkdag 9:00</button>
-      </div>
     </section>
 
     <details class="panel" id="eventsPanel" data-key="events">
@@ -128,9 +109,8 @@
     </details>
 
     <footer class="foot">
-      <p>Alles blijft op dit toestel. Niets gaat naar een server.</p>
+      <p>Prik onthoudt alleen wat je hier prikt. Alles blijft op dit toestel.</p>
       <div class="foot-actions">
-        <button type="button" class="link" id="exportAll">Alle afspraken als .ics</button>
         <button type="button" class="link" id="backup">Back-up maken</button>
         <label class="link">Back-up terugzetten<input type="file" id="restore" accept="application/json" hidden></label>
       </div>
@@ -180,7 +160,7 @@
       <label class="field"><span>Notitie</span><textarea name="notes" rows="2" placeholder="Optioneel"></textarea></label>
       <div class="sheet-actions">
         <button type="button" class="btn danger" data-delete>Verwijderen</button>
-        <button type="button" class="btn ghost" data-export>In agenda</button>
+        <button type="button" class="btn ghost" data-export>In Google Agenda</button>
         <button type="submit" class="btn primary">Opslaan</button>
       </div>
     </form>
@@ -202,7 +182,7 @@
       <label class="field"><span>Notitie</span><textarea name="notes" rows="2" placeholder="Optioneel"></textarea></label>
       <div class="sheet-actions">
         <button type="button" class="btn danger" data-delete>Verwijderen</button>
-        <button type="button" class="btn ghost" data-export>In agenda</button>
+        <button type="button" class="btn ghost" data-export>In Google Agenda</button>
         <button type="submit" class="btn primary">Opslaan</button>
       </div>
     </form>

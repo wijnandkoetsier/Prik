@@ -59,17 +59,6 @@ button { cursor: pointer; }
   letter-spacing: -0.045em;
 }
 
-/* ---------- target select ---------- */
-.target-row { margin-bottom: 16px; }
-.select { position: relative; display: inline-flex; align-items: center; max-width: 100%; }
-.select select {
-  appearance: none; -webkit-appearance: none;
-  background: var(--white); color: var(--ink);
-  border: 1px solid var(--line); border-radius: 12px;
-  padding: 13px 48px 13px 18px; font-size: 17px; max-width: 100%;
-}
-.select .ic { position: absolute; right: 14px; color: var(--ink); width: 20px; height: 20px; pointer-events: none; }
-
 /* ---------- cards ---------- */
 .card, .panel, .sheet, .select select { color-scheme: light; }
 .card {
@@ -127,13 +116,6 @@ button { cursor: pointer; }
 .preview-hint { margin: 10px 0 0; font-size: 14px; color: var(--muted); }
 .preview-hint kbd { font: inherit; font-weight: 600; color: var(--ink); }
 
-.examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.examples button {
-  border: 1px dashed var(--line); background: none; border-radius: 999px;
-  padding: 5px 11px; font-size: 14px; color: var(--muted);
-}
-.examples button:active { background: var(--lime-soft); }
-.examples.hidden { display: none; }
 
 /* ---------- panels ---------- */
 .panel {

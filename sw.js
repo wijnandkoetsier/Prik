@@ -1,5 +1,5 @@
 // Offline support: serve the app shell from cache, refresh it in the background.
-const CACHE = 'prik-v1';
+const CACHE = 'prik-v2';
 const SHELL = [
   './', 'index.html', 'css/styles.css', 'js/parser.js', 'js/calendar.js', 'js/app.js',
   'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png',

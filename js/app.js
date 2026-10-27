@@ -23,13 +23,8 @@
   const defaults = () => ({
     events: [],
     tasks: [],
-    settings: { target: guessTarget(), open: { events: false, calendar: false, tasks: false } },
+    settings: { open: { events: false, calendar: false, tasks: false } },
   });
-  function guessTarget() {
-    const ua = navigator.userAgent;
-    if (/iPhone|iPad|Macintosh/.test(ua)) return 'apple';
-    return 'google';
-  }
   function load() {
     try {
       const d = JSON.parse(localStorage.getItem(KEY));
@@ -97,58 +92,13 @@
     if (navigator.vibrate) navigator.vibrate(12);
   }
 
-  // ---------------------------------------------------------------- export
-  async function shareIcs(events, filename) {
-    const text = C.ics(events);
-    const file = new File([text], filename, { type: 'text/calendar' });
-    // On phones the share sheet lets people pick Samsung/Apple calendar directly.
-    if (navigator.canShare && /Android|iPhone|iPad/.test(navigator.userAgent)) {
-      try {
-        if (navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: events.length === 1 ? events[0].title : 'Prik afspraken' });
-          return;
-        }
-      } catch (e) {
-        if (e && e.name === 'AbortError') return;
-      }
-    }
-    const url = URL.createObjectURL(file);
-    const a = document.createElement('a');
-    a.href = url; a.download = filename;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  // ---------------------------------------------------------------- Google Agenda
+  // Opens Google Agenda with the appointment filled in; one tap on Opslaan saves it.
+  function openInGoogle(ev) {
+    const url = C.googleUrl(ev);
+    const win = window.open(url, '_blank');
+    if (!win) location.href = url; // popup blocked: open in the same tab
   }
-
-  function slug(s) {
-    return (s || 'afspraak').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'afspraak';
-  }
-
-  function exportEvent(ev, target = state.settings.target) {
-    switch (target) {
-      case 'google': window.open(C.googleUrl(ev), '_blank', 'noopener'); break;
-      case 'outlook': window.open(C.outlookUrl(ev, false), '_blank', 'noopener'); break;
-      case 'office': window.open(C.outlookUrl(ev, true), '_blank', 'noopener'); break;
-      case 'apple':
-      case 'ics': shareIcs([ev], slug(ev.title) + '.ics'); break;
-      default: return false;
-    }
-    return true;
-  }
-
-  // ---------------------------------------------------------------- target select
-  const targetSel = $('#target');
-  targetSel.value = state.settings.target;
-  targetSel.addEventListener('change', () => {
-    state.settings.target = targetSel.value;
-    save();
-    renderPreview('event');
-    toast(targetSel.value === 'none' ? 'Afspraken blijven alleen in Prik' : `Afspraken gaan naar ${targetSel.selectedOptions[0].textContent}`);
-  });
-  const targetShort = () => ({
-    google: 'Google Agenda', apple: 'Apple Agenda', outlook: 'Outlook', office: 'Outlook',
-    ics: 'je agenda', none: 'Prik',
-  })[state.settings.target];
 
   // ---------------------------------------------------------------- composers
   const composers = {
@@ -162,7 +112,6 @@
     const btn = c.form.querySelector('.action');
     btn.classList.toggle('has-text', !!text);
     btn.setAttribute('aria-label', text ? (kind === 'event' ? 'Afspraak prikken' : 'Taak toevoegen') : 'Inspreken');
-    if (kind === 'event') $('#eventExamples').classList.toggle('hidden', !!text || state.events.length > 2);
     if (!text) { c.parsed = null; c.preview.classList.remove('show'); c.preview.innerHTML = ''; return; }
 
     const r = P.parse(text, { kind });
@@ -186,7 +135,7 @@
       if (r.recurrence) chips.push(`<span class="chip">${icon('repeat')}${escapeHtml(repeatLabel(r.recurrence))}</span>`);
     }
     const hint = kind === 'event'
-      ? (state.settings.target === 'none' ? 'Druk op <kbd>Enter</kbd> om te bewaren' : `Druk op <kbd>Enter</kbd> om in ${escapeHtml(targetShort())} te zetten`)
+      ? 'Druk op <kbd>Enter</kbd> om in Google Agenda te zetten'
       : 'Druk op <kbd>Enter</kbd> om toe te voegen';
     c.preview.innerHTML = `
       <p class="preview-title${r.title ? '' : ' empty'}">${r.title ? escapeHtml(r.title) : 'Nog geen titel'}</p>
@@ -218,8 +167,8 @@
       };
       state.events.push(ev);
       save();
-      const sent = exportEvent(ev);
-      toast(sent ? `Geprikt! Open ${targetShort()} om op te slaan` : 'Geprikt!', 'Ongedaan', () => removeItem('events', ev.id, true));
+      openInGoogle(ev);
+      toast('Geprikt! Tik in Google Agenda op Opslaan', 'Ongedaan', () => removeItem('events', ev.id, true));
     } else {
       const task = {
         id: uid(),
@@ -252,13 +201,6 @@
       startListening(kind);
     });
   }
-  $('#eventExamples').addEventListener('click', (e) => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    composers.event.input.value = b.textContent;
-    renderPreview('event');
-    composers.event.input.focus();
-  });
 
   // ---------------------------------------------------------------- voice
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -599,13 +541,12 @@
     if (!editingEvent) return;
     readEventForm(editingEvent);
     save(); renderAll(); evDlg.close();
-    toast('Opgeslagen. Ook je agenda bijwerken?', 'In agenda', () => exportEvent(editingEvent));
+    toast('Opgeslagen. Ook in Google Agenda aanpassen?', 'Openen', () => openInGoogle(editingEvent));
   });
   evForm.querySelector('[data-export]').addEventListener('click', () => {
     if (!editingEvent) return;
     readEventForm(editingEvent); save(); renderAll();
-    const target = state.settings.target === 'none' ? 'ics' : state.settings.target;
-    exportEvent(editingEvent, target);
+    openInGoogle(editingEvent);
     evDlg.close();
   });
   evForm.querySelector('[data-delete]').addEventListener('click', () => {
@@ -649,7 +590,7 @@
     const ev = t.time
       ? { id: t.id, title: t.title, start: `${date}T${t.time}`, end: C.toLocal(new Date(C.fromLocal(`${date}T${t.time}`).getTime() + 30 * 60000)), allDay: false, notes: t.notes, reminder: 15 }
       : { id: t.id, title: t.title, start: `${date}T00:00`, end: C.toLocal(addDays(C.fromLocal(date), 1)), allDay: true, notes: t.notes };
-    exportEvent(ev, state.settings.target === 'none' ? 'ics' : state.settings.target);
+    openInGoogle(ev);
     tkDlg.close();
   });
   tkForm.querySelector('[data-delete]').addEventListener('click', () => {
@@ -670,10 +611,6 @@
   }
 
   // ---------------------------------------------------------------- footer
-  $('#exportAll').addEventListener('click', () => {
-    if (!state.events.length) return toast('Nog geen afspraken om te exporteren');
-    shareIcs(state.events, 'prik-afspraken.ics');
-  });
   $('#backup').addEventListener('click', () => {
     const blob = new Blob([JSON.stringify({ ...state, exported: new Date().toISOString() }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
