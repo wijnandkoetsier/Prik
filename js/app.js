@@ -49,6 +49,13 @@
     if (diff === -1) return 'Gisteren';
     return fmtDay.format(d);
   }
+  // "Wo 28 oktober" (year added when it is not this year)
+  const WEEKDAYS = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'];
+  const MONTHS = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+  function groupLabel(d, now = new Date()) {
+    const year = d.getFullYear() !== now.getFullYear() ? ` ${d.getFullYear()}` : '';
+    return `${WEEKDAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}${year}`;
+  }
   function repeatLabel(r) {
     if (!r) return '';
     const iv = r.interval || 1;
@@ -280,7 +287,7 @@
     let html = '';
     let lastLabel = null;
     for (const { ev, at } of upcoming) {
-      const label = dayLabel(at, now);
+      const label = groupLabel(at, now);
       if (label !== lastLabel) { html += `<div class="group-label">${escapeHtml(label)}</div>`; lastLabel = label; }
       html += eventRow(ev, at);
     }
@@ -459,9 +466,8 @@
   $('#dayDetail').addEventListener('click', (e) => {
     if (e.target.closest('[data-add-day]')) {
       const d = selectedDay;
-      const months = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
       const inp = composers.event.input;
-      inp.value = `${d.getDate()} ${months[d.getMonth()]}${d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : ''} `;
+      inp.value = `${d.getDate()} ${MONTHS[d.getMonth()]}${d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : ''} `;
       renderPreview('event');
       inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
       inp.focus();

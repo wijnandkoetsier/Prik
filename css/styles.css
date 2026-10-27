@@ -137,7 +137,7 @@ button { cursor: pointer; }
 .empty-state { text-align: center; color: var(--muted); padding: 6px 10px 10px; font-size: 13.5px; margin: 0; }
 
 .group-label {
-  font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 700;
+  font-size: 13px; font-weight: 700;
   color: var(--muted); margin: 8px 6px 4px;
 }
 .group-label:first-child { margin-top: 2px; }
